@@ -64,25 +64,6 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		playBtn = (Button)findViewById(R.id.play);
-		playBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				play(v);	
-			}
-		});
-
-		stopPlayBtn = (Button)findViewById(R.id.stopPlay);
-		stopPlayBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				stopPlay(v);
-			}
-		});
 	}
 
 	public void start(View view){
@@ -114,7 +95,7 @@ public class MainActivity extends Activity {
 			myRecorder  = null;
 
 			stopBtn.setEnabled(false);
-			playBtn.setEnabled(true);
+			startBtn.setEnabled(true);
 			text.setText("Recording Point: Stop recording");
 			stopRepeatingTask();
 			Toast.makeText(getApplicationContext(), "Stop recording...",
@@ -126,45 +107,18 @@ public class MainActivity extends Activity {
 			// no valid audio/video data has been received
 			e.printStackTrace();
 		}
+		outputFile = Environment.getExternalStorageDirectory().
+				getAbsolutePath() + "/javacodegeeksRecording.3gpp";
+
+		myRecorder = new MediaRecorder();
+		myRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+		myRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+		myRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+		myRecorder.setOutputFile(outputFile);
+		mHandler = new Handler();
 	}
 
-	public void play(View view) {
-		try{
-			myPlayer = new MediaPlayer();
-			myPlayer.setDataSource(outputFile);
-			myPlayer.prepare();
-			myPlayer.start();
 
-			playBtn.setEnabled(false);
-			stopPlayBtn.setEnabled(true);
-			text.setText("Recording Point: Playing");
-
-			Toast.makeText(getApplicationContext(), "Start play the recording...", 
-					Toast.LENGTH_SHORT).show();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void stopPlay(View view) {
-		try {
-			if (myPlayer != null) {
-				myPlayer.stop();
-				myPlayer.release();
-				myPlayer = null;
-				playBtn.setEnabled(true);
-				stopPlayBtn.setEnabled(false);
-				text.setText("Recording Point: Stop playing");
-
-				Toast.makeText(getApplicationContext(), "Stop playing the recording...", 
-						Toast.LENGTH_SHORT).show();
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 	private double getAmplitude() {
 		if (myRecorder != null) {
 			double m = myRecorder.getMaxAmplitude();
